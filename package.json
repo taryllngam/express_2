@@ -1,0 +1,23 @@
+{
+  "name": "learn-node-with-express",
+  "version": "0.1.0",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.14.0",
+    "mongoose": "^7.0.0",
+    "mysql2": "^3.5.2",
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.32.1"
+  },
+  "main": "myApp.js",
+  "scripts": {
+    "start": "node myApp.js",
+    "start-mon": "nodemon myApp.js"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/express": "^4.17.17"
+  }
+}
