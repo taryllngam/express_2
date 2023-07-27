@@ -5,14 +5,28 @@ dotenv.config();
 const Cohort = require("./Models/cohort");
 const Student = require("./Models/student");
 const Book = require("./Models/books");
-const Courses = require("./Models/courses")
+const Courses = require("./Models/courses");
 let bodyParser = require("body-parser");
+
+const {Op, Sequelize} = require("sequelize")
 
 let app = express();
 
+
 // student callbacks
 const getStudents = async (req, res) => {
-  await Student.findAll()
+let page = req.query.page? req.query.page: 0
+let limit = req.query.limit? req.query.limit: 5
+
+  await Student.findAll({
+    group: "score",
+    order: [
+      // ["score","DESC"],
+      Sequelize.fn('MAX', Sequelize.col('score'))
+    ],
+    limit,
+    offset: page * limit,
+  })
     .then((resp) => {
       console.log(resp);
       return res.json(resp);
@@ -25,8 +39,13 @@ const getStudents = async (req, res) => {
 
 const getStudent = async (req, res) => {
   await Student.findOne({
+    attributes: { exclude: ["name", "email", "phone", "country"] },
     where: {
-      id: req.params.id,
+      [Op.and]: [
+        { id: req.params.id},
+        { sex: "female"}
+      ]
+   
     },
     include: {
       model: Courses,
@@ -236,7 +255,7 @@ const updateBook = async (req, res) => {
   });
 };
 
-//courses callbacks 
+//courses callbacks
 const getCourses = async (req, res) => {
   await Courses.findAll()
     .then((resp) => {
@@ -309,7 +328,6 @@ const updateCourse = async (req, res) => {
     return res.json(resp);
   });
 };
-
 
 let rootCallback = (req, res) => {
   res.json({ hello: "Welcome to Express" });
